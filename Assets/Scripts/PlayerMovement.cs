@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     public float jumpForce = 8.0f;
     public float turnSpeed = 0.15f;
     [SerializeField] private bool facingRight;
+    [SerializeField] private bool isMoving;
     [SerializeField] private bool isGrounded;
     [SerializeField] private bool canShoot;
 
@@ -17,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
     Collider[] groundCol;
 
     private Rigidbody rBody;
+    Animator anim;
     private Vector2 moveInput;
 
     KnightInput kInput;
@@ -33,6 +35,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rBody = GetComponent<Rigidbody>();
         pShoot = GetComponent<PlayerShoot>();
+        anim = GetComponentInChildren<Animator>();
     }
 
     private void OnEnable()
@@ -74,6 +77,8 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         rBody.MovePosition(transform.position + new Vector3(moveInput.x, 0, 0) * moveSpeed * Time.fixedDeltaTime);
+
+        anim.SetFloat("Speed", Mathf.Abs(moveInput.x));
     }
 
     void PlayerJump()
