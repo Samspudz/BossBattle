@@ -7,6 +7,7 @@ using UnityEngine;
 public class BossController : MonoBehaviour
 {
     BossProjectileScript bossProjectiles;
+    CameraShakeScript camShake;
 
     Rigidbody bossRB;
     Animator bossAnim;
@@ -25,11 +26,12 @@ public class BossController : MonoBehaviour
         StartCoroutine(ShockAttack());
         facingLeft = true;
         groundCol = GetComponent<Collider>();
+        camShake = FindObjectOfType<CameraShakeScript>();
     }
 
     IEnumerator ShockAttack()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(4);
 
         if (!bossDead)
         {
@@ -88,6 +90,7 @@ public class BossController : MonoBehaviour
     {
         if (!bossDead)
         {
+            camShake.ShakeX();
             if (facingLeft)
             {
                 transform.DORotate(Vector3.up * 180, 0.2f, RotateMode.Fast);
@@ -101,6 +104,8 @@ public class BossController : MonoBehaviour
             bossRB.useGravity = true;
             facingLeft = !facingLeft;
             bossAnim.SetTrigger("Standing");
+
+            StartCoroutine(ShockAttack());
         }
     }
 

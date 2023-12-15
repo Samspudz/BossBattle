@@ -6,6 +6,7 @@ using DG.Tweening;
 public class BossProjectileScript : MonoBehaviour
 {
     BossController bossCTRL;
+    CameraShakeScript camShake;
 
     public Transform shockSpawn, rockSpawn, playerTarget;
 
@@ -16,10 +17,12 @@ public class BossProjectileScript : MonoBehaviour
     {
         bossCTRL = GetComponent<BossController>();
         playerTarget = GameObject.FindGameObjectWithTag("RockTarget").transform;
+        camShake = FindObjectOfType<CameraShakeScript>();
     }
 
     public void ShockProjectile()
     {
+        camShake.ShakeY();
         Rigidbody _shock;
         _shock = Instantiate(_shockwave, shockSpawn.position, shockSpawn.rotation) as Rigidbody;
         _shock.AddForce(shockSpawn.forward * 1000f, ForceMode.Acceleration);

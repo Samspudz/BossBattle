@@ -12,6 +12,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private bool isMoving;
     [SerializeField] private bool isGrounded;
     [SerializeField] private bool canShoot;
+    [SerializeField] public bool isDead;
 
     public Transform groundCheck;
     public LayerMask thisIsGround;
@@ -36,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
         rBody = GetComponent<Rigidbody>();
         pShoot = GetComponent<PlayerShoot>();
         anim = GetComponentInChildren<Animator>();
+        isDead = false;
     }
 
     private void OnEnable()
@@ -56,22 +58,25 @@ public class PlayerMovement : MonoBehaviour
         else
             isGrounded = false;
 
-        moveInput.x = kInput.Player.Move.ReadValue<Vector2>().x;
-
-        if (kInput.Player.Jump.triggered && isGrounded)
-            PlayerJump();
-
-        if (kInput.Player.Shoot.triggered && canShoot)
+        if (!isDead)
         {
-            pShoot.PlayerShot();
-            StartCoroutine(ShotTime());
+            moveInput.x = kInput.Player.Move.ReadValue<Vector2>().x;
+
+            if (kInput.Player.Jump.triggered && isGrounded)
+                PlayerJump();
+
+            if (kInput.Player.Shoot.triggered && canShoot)
+            {
+                pShoot.PlayerShot();
+                StartCoroutine(ShotTime());
+            }
+
+            if (moveInput.x > 0 && !facingRight)
+                PlayerTurn();
+
+            if (moveInput.x < 0 && facingRight)
+                PlayerTurn();
         }
-
-        if (moveInput.x > 0 && !facingRight)
-            PlayerTurn();
-
-        if (moveInput.x < 0 && facingRight)
-            PlayerTurn();
     }
 
     private void FixedUpdate()
@@ -101,5 +106,11 @@ public class PlayerMovement : MonoBehaviour
         canShoot = false;
         yield return new WaitForSeconds(0.5f);
         canShoot = true;
+    }
+
+    public void PlayerDeath()
+    {
+        isDead = true;
+        anim.SetTrigger("Death");
     }
 }

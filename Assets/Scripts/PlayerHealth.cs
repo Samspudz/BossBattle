@@ -17,6 +17,8 @@ public class PlayerHealth : MonoBehaviour
         if (other.gameObject.tag == "EnemyShot" || other.gameObject.tag == "EnemyBoss")
         {
             knightHealth--;
+            if (knightHealth <= 0)
+                knightCTRL.PlayerDeath();
         }
     }
 }
